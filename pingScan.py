@@ -27,11 +27,10 @@ def main():
 			inc = 65026
 		elif int(cidr) == 24:
 			inc = 256
+		maxIP = ipaddress.ip_address(minIP) + inc
 	else:
 		print("Provide input in the format 10.0.0.1-10.0.0.100 or 10.0.0.1/24")
 		sys.exit()
-
-		maxIP = ipaddress.ip_address(minIP) + inc
 
 	while (ipaddress.ip_address(minIP) != ipaddress.ip_address(maxIP)):
 		ping(minIP)
