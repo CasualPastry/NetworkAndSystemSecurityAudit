@@ -8,7 +8,7 @@ import os, ipaddress, sys
 
 def ping(IPAddr):
 	if (os.system("ping -c 1 " + str(IPAddr) + " -W 1 > /dev/null")) == 0:
-		print(str(IPAddr)+" - host is UP.\n")
+		print(str(IPAddr)+" - host is UP.")
 
 def main():
 	IPAddrRange = input("Please enter an IP address range: ")

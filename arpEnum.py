@@ -4,14 +4,21 @@
 #           and maps MAC addresses to IP addresses that are up
 #
 ###################################################################
-import os, ipaddress, sys
+import os, ipaddress, sys, logging
+logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
+from scapy.all import srp,Ether,ARP,conf
 
-def ping(IPAddr):
+def scan(IPAddr, interface):
 	if (os.system("ping -c 1 " + str(IPAddr) + " -W 1 > /dev/null")) == 0:
-		print(str(IPAddr)+" - host is UP.\n")
+		conf.verb = 0
+		ans, unans = srp(Ether(dst="ff:ff:ff:ff:ff:ff")/ARP(pdst = str(IPAddr)), timeout=2,
+		iface = interface, inter=0.1)
+		for send,rcv in ans:
+			print(rcv.sprintf(r"%ARP.psrc% - %Ether.src%"))
 
 def main():
 	IPAddrRange = input("Please enter an IP address range: ")
+	interface = input("Please enter the interface to scan from: ")
 	opt1 = IPAddrRange.split("-")
 	opt2 = IPAddrRange.split("/")
 
@@ -33,7 +40,7 @@ def main():
 		sys.exit()
 
 	while (ipaddress.ip_address(minIP) != ipaddress.ip_address(maxIP)):
-		ping(minIP)
+		scan(minIP, interface)
 		minIP = ipaddress.ip_address(minIP) + 1
 
 if __name__ == '__main__':
